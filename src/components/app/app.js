@@ -13,9 +13,15 @@ class App extends Component{
     this.state = {
       data: [
         {id: 1, rise: true, name: 'Kirill', salary: '132234', increase: true},
-        {id: 2, rise: false, name: 'Masha', salary: '122353', increase: false}
+        {id: 2, rise: false, name: 'Masha', salary: '122353', increase: false},
+        {id: 3, rise: false, name: 'John', salary: '2323', increase: false},
+        {id: 4, rise: false, name: 'Slava', salary: '3223232', increase: false},
+        {id: 5, rise: false, name: 'Elkin', salary: '122232353', increase: false},
+        {id: 6, rise: false, name: 'Bis', salary: '1', increase: false}
       ],
-      maxId: 2
+      term: '',
+      filter: '',
+      maxId: 6
     };
   }
 
@@ -48,7 +54,84 @@ class App extends Component{
     })
   }
 
-  // onToggleIncrease = (id) => {
+  onToggleProp = (id, prop) => {
+      this.setState(({data}) => ({
+        data: data.map(item => {
+          return item.id === id ? {...item, [prop]: !item[prop]} : item;
+        })
+      }))
+  }
+
+  searchEmp = (items, term) => {
+    if (term.length === 0 ) {
+      return items;
+    }
+
+    return items.filter(item => {
+      return item.name.toLocaleLowerCase().indexOf(term.toLocaleLowerCase()) > -1;
+    })
+  }
+
+  filterEmp = (items, filter) => {
+    if (filter.length === 0 ) {
+      return items;
+    }
+
+    console.log('222');
+  }
+
+  onUpdateSearch = (term) => {
+    this.setState({term: term})
+    //this.setState({term})// сокращённая запись объектов
+  }
+
+  onUpdateFilter = (data) => {
+    this.setState({data: data})
+    //this.setState({term})// сокращённая запись объектов
+  }
+
+  render() {
+    const {data, term, filter} = this.state;
+    const visibleSearchData = this.searchEmp(data, term);
+    const visibleData = this.filterEmp(visibleSearchData, filter);
+
+    return (
+      <div className="app">
+        <AppInfo 
+          numberOfEmployees = {data.length}
+          increaseOfEmployees = {data.filter(emp => emp.increase).length} 
+        />
+        <div className="search-panel">
+          <SearchPanel onUpdateSearch = {this.onUpdateSearch} />
+          <AppFilter onUpdateFilter = {this.onUpdateFilter}/>
+        </div>
+        <EmployeesList
+          data = {visibleData}
+          onDelete = {this.deleteItem}
+          onToggleProp = {this.onToggleProp}
+        />
+        <EmployeesAddForm 
+          onAdd = {this.addItem}
+        />
+      </div>
+    )
+  }
+}
+
+export default App;
+//!Урок по свойствам(пропсам)
+// function WhoAmI(props) { // props — объект с аргументами, даже если мы его не передаём, он все равно будет существовать. Можно также деструктуризировать {name, surname, link}. Поменять внутри не можем, только читать
+//   return(
+//     <div>
+//       <h1>My name is {props.name}, surname — {props.name}</h1>
+//       <a href="{props.link}">My profile</a>
+//     </div>
+//   )
+// }
+
+// <WhoAmI name="John" surname ="Smith" link="vk.com"/>
+
+// onToggleIncrease = (id) => {
   //   // this.setState(({data}) => {
   //   //   const index = data.findIndex(elem => elem.id === id),
   //   //         old = data[index],
@@ -76,48 +159,3 @@ class App extends Component{
   //     })
   //   }))
   // }
-
-  onToggleProp = (id, prop) => {
-      this.setState(({data}) => ({
-        data: data.map(item => {
-          return item.id === id ? {...item, [prop]: !item[prop]} : item;
-        })
-      }))
-    }
-
-  render() {
-    return (
-      <div className="app">
-        <AppInfo 
-          numberOfEmployees = {this.state.data.length}
-          increaseOfEmployees = {this.state.data.filter(emp => emp.increase).length} 
-        />
-        <div className="search-panel">
-          <SearchPanel/>
-          <AppFilter/>
-        </div>
-        <EmployeesList
-          data = {this.state.data}
-          onDelete = {this.deleteItem}
-          onToggleProp = {this.onToggleProp}
-        />
-        <EmployeesAddForm 
-          onAdd = {this.addItem}
-        />
-      </div>
-    )
-  }
-}
-
-export default App;
-//!Урок по свойствам(пропсам)
-// function WhoAmI(props) { // props — объект с аргументами, даже если мы его не передаём, он все равно будет существовать. Можно также деструктуризировать {name, surname, link}. Поменять внутри не можем, только читать
-//   return(
-//     <div>
-//       <h1>My name is {props.name}, surname — {props.name}</h1>
-//       <a href="{props.link}">My profile</a>
-//     </div>
-//   )
-// }
-
-// <WhoAmI name="John" surname ="Smith" link="vk.com"/>
