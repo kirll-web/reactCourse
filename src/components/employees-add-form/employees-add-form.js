@@ -41,7 +41,7 @@ class EmployeesAddForm extends Component {
               <button type="submit"
                       onClick = {(e) => {
                         e.preventDefault();
-                        this.state.name.length > 3 && this.state.salary !== '' ? this.props.onAdd(this.state) : alert('Введите имя и зарплату сотрудника.');
+                        this.state.name.length > 3 && this.state.salary !== 0 ? this.props.onAdd(this.state) : alert('Введите имя и зарплату сотрудника.');
                       }}
                       className="btn btn-outline-light">Добавить</button>
           </form>

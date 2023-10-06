@@ -12,15 +12,15 @@ class App extends Component{
     super(props);
     this.state = {
       data: [
-        {id: 1, rise: true, name: 'Kirill', salary: '132234', increase: true},
-        {id: 2, rise: false, name: 'Masha', salary: '122353', increase: false},
-        {id: 3, rise: false, name: 'John', salary: '2323', increase: false},
-        {id: 4, rise: false, name: 'Slava', salary: '3223232', increase: false},
-        {id: 5, rise: false, name: 'Elkin', salary: '122232353', increase: false},
-        {id: 6, rise: false, name: 'Bis', salary: '1', increase: false}
+        {id: 1, rise: true, name: 'Kirill', salary: 132234, increase: true},
+        {id: 2, rise: false, name: 'Masha', salary: 122353, increase: false},
+        {id: 3, rise: false, name: 'John', salary: 2323, increase: false},
+        {id: 4, rise: false, name: 'Slava', salary: 3223232, increase: false},
+        {id: 5, rise: false, name: 'Elkin', salary: 122232353, increase: false},
+        {id: 6, rise: false, name: 'Bis', salary: 1, increase: false}
       ],
       term: '',
-      filter: '',
+      filter: 'all',
       maxId: 6
     };
   }
@@ -38,7 +38,7 @@ class App extends Component{
     this.setState(() => {
       const newEmployees = {
         name: name,
-        salary: salary,
+        salary: Number(salary),
         rise: false,
         id: this.state.maxId + 1,
         increase: false
@@ -72,12 +72,23 @@ class App extends Component{
     })
   }
 
-  filterEmp = (items, filter) => {
-    if (filter.length === 0 ) {
+  filterEmp = (items, filter2) => {
+    
+    if (filter2.length === 0 ) {
       return items;
     }
 
-    console.log('222');
+    switch(filter2) {
+      case 'rise':
+        console.log(filter2);
+        return items.filter(item => item.rise)
+      case 'bigSalary':
+        console.log(items);
+        return items.filter(item => Number(item.salary) > 1000)
+      default: 
+        console.log(filter2);
+        return items;
+    }
   }
 
   onUpdateSearch = (term) => {
@@ -85,15 +96,14 @@ class App extends Component{
     //this.setState({term})// сокращённая запись объектов
   }
 
-  onUpdateFilter = (data) => {
-    this.setState({data: data})
+  onUpdateFilter = (filter) => {
+    this.setState({filter: filter})
     //this.setState({term})// сокращённая запись объектов
   }
 
   render() {
     const {data, term, filter} = this.state;
-    const visibleSearchData = this.searchEmp(data, term);
-    const visibleData = this.filterEmp(visibleSearchData, filter);
+    const visibleData = this.filterEmp(this.searchEmp(data, term), filter);
 
     return (
       <div className="app">
@@ -103,7 +113,7 @@ class App extends Component{
         />
         <div className="search-panel">
           <SearchPanel onUpdateSearch = {this.onUpdateSearch} />
-          <AppFilter onUpdateFilter = {this.onUpdateFilter}/>
+          <AppFilter filter={filter} onUpdateFilter = {this.onUpdateFilter}/>
         </div>
         <EmployeesList
           data = {visibleData}

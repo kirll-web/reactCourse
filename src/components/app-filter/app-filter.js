@@ -1,49 +1,31 @@
-import { Component } from 'react';
 import './app-filter.css'
 
-class AppFilter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filter: ''
-    }
-  }
+const AppFilter = (props) => {
 
-  onUpdateFilter = (e) => {
-    const filter = e.target.getAttribute('data-filter');
+  const buttonsData = [
+    {name: 'all', label: 'Все сотрудники'},
+    {name: 'rise', label: 'На повышение'},
+    {name: 'bigSalary', label: 'З/П больше 1000$'},
+  ]
 
-    this.setState({filter})
-
-    this.props.onUpdateFilter(filter);
-  }
-
-  render() {
+  const buttons = buttonsData.map(({name, label}) => {
+    const active = name === props.filter;
     return (
-      <div className="btn-group">
-        <button 
-          className="btn btn-light"
-          type="button"
-          data-filter="allEpm"
-          onClick = {(e) => this.onUpdateFilter(e)}>
-            Все сотрудники
-        </button>
-        <button 
-          className="btn btn-outline-light"
-          type="button"
-          data-filter="riseEmp"
-          onClick = {(e) => this.onUpdateFilter(e)}>
-            На повышение
-        </button>
-        <button 
-          className="btn btn-outline-light"
-          type="button"
-          data-filter="bigSalaryEmp"
-          onClick = {(e) => this.onUpdateFilter(e)}>
-            З/П больше 1000$
-        </button>
-      </div>
-    );
-  }
+      <button 
+        className={active ? `btn btn-light`: `btn btn-outline-light`}
+        type="button"
+        key={name}
+        onClick = {() => props.onUpdateFilter(name)}>
+          {label}
+      </button>
+    )
+  })
+
+  return (
+    <div className="btn-group">
+      {buttons}
+    </div>
+  );
 }
 
 export default AppFilter;
